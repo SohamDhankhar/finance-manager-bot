@@ -1,0 +1,34 @@
+{
+    "monthly_income": 1000.0,
+    "breakdown": {
+        "needs": 500,
+        "wants": 300,
+        "savings": 200
+    },
+    "expenses": {
+        "2025-07": {
+            "2025-07-01": [
+                {
+                    "amount": 120.0,
+                    "category": "needs",
+                    "description": "Food",
+                    "note": "",
+                    "timestamp": "2025-07-01T00:07:12.716023"
+                },
+                {
+                    "amount": 100.0,
+                    "category": "needs",
+                    "description": "Badminton",
+                    "note": "[Added via Telegram]"
+                }
+            ]
+        }
+    },
+    "deposits": {},
+    "settings": {
+        "theme": "darkly",
+        "pin": "5145"
+    },
+    "recurring_expenses": [],
+    "savings_goals": []
+}

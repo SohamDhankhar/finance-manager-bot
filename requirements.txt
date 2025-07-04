@@ -1,0 +1,11 @@
+python-telegram-bot
+pandas
+json5
+requests
+python-dotenv
+bcrypt
+ttkbootstrap
+Pillow
+matplotlib
+schedule
+tk
