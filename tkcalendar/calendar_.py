@@ -25,12 +25,16 @@ Calendar widget
 
 
 import calendar
+import datetime
+from datetime import timedelta
 try:
     from tkinter import ttk
     from tkinter.font import Font
 except ImportError:
-    import ttk
-    from tkFont import Font
+    try:
+        from tkinter.font import Font
+    except ImportError:
+        raise ImportError("tkinter is required for tkcalendar and could not be imported.")
 
 from babel import default_locale
 from babel.dates import format_date, parse_date, get_day_names, get_month_names, get_date_format
@@ -39,12 +43,12 @@ import re
 
 
 class Calendar(ttk.Frame):
-    """Calendar widget."""
-    date = calendar.datetime.date
-    datetime = calendar.datetime.datetime
-    timedelta = calendar.datetime.timedelta
-    strptime = calendar.datetime.datetime.strptime
-    strftime = calendar.datetime.datetime.strftime
+    date = datetime.date
+    datetime = datetime.datetime
+    timedelta = timedelta
+    strptime = datetime.strptime
+    # strftime = datetime.datetime.strftime  # Removed erroneous assignment
+    strftime = datetime.strftime
 
     def __init__(self, master=None, **kw):
         """
@@ -218,7 +222,7 @@ class Calendar(ttk.Frame):
         """
 
         curs = kw.pop("cursor", "")
-        font = kw.pop("font", "Liberation\ Sans 9")
+        font = kw.pop("font", r"liberation\ Sans 9")
         classname = kw.pop('class_', "Calendar")
         name = kw.pop('name', None)
         ttk.Frame.__init__(self, master, class_=classname, cursor=curs, name=name)
@@ -580,15 +584,21 @@ class Calendar(ttk.Frame):
                     self.state((state,))
                     self._header.state((state,))
                     for child in self._header.children.values():
-                        child.state((state,))
-                    self._header_month.state((state,))
-                    self._header_year.state((state,))
+                        if hasattr(child, "state") and callable(getattr(child, "state", None)):
+                            if hasattr(child, "state") and callable(getattr(child, "state", None)):
+                                child.state((state,)) # type: ignore
+                    # Set state for _header_month and _header_year if possible
+                    if hasattr(self._header_month, "state") and callable(getattr(self._header_month, "state", None)):
+                        self._header_month.state((state,))
+                    if hasattr(self._header_year, "state") and callable(getattr(self._header_year, "state", None)):
+                        self._header_year.state((state,))
+                    # self._header_year.state((state,))
                     self._l_year.state((state,))
                     self._r_year.state((state,))
                     self._l_month.state((state,))
                     self._r_month.state((state,))
                     for child in self._cal_frame.children.values():
-                        child.state((state,))
+                        child.state((state,)) # type: ignore
             elif key == "maxdate":
                 if value is not None:
                     if isinstance(value, self.datetime):
@@ -845,18 +855,20 @@ class Calendar(ttk.Frame):
 
         if maxdate is not None:
             mi, mj = self._get_day_coords(maxdate)
-            if mi is not None:
+            if mi is not None and mj is not None:
                 for j in range(mj + 1, 7):
                     self._calendar[mi][j].state(['disabled'])
+
                 for i in range(mi + 1, 6):
                     for j in range(7):
                         self._calendar[i][j].state(['disabled'])
 
         if mindate is not None:
             mi, mj = self._get_day_coords(mindate)
-            if mi is not None:
+            if mi is not None and mj is not None:
                 for j in range(mj):
                     self._calendar[mi][j].state(['disabled'])
+
                 for i in range(mi):
                     for j in range(7):
                         self._calendar[i][j].state(['disabled'])

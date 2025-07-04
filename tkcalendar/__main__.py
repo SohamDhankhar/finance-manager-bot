@@ -3,8 +3,12 @@ try:
     import tkinter as tk
     from tkinter import ttk
 except ImportError:
-    import Tkinter as tk
-    import ttk
+    import sys
+    if sys.version_info[0] == 2:
+        import Tkinter as tk
+        import ttk
+    else:
+        raise
 
 
 def example1():
